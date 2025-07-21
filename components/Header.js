@@ -1,131 +1,171 @@
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import SearchBar from './SearchBar';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import SearchBar from "./SearchBar";
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
+      setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navigation = [
-    { name: 'Beranda', href: '/' },
-    { name: 'Produk', href: '/produk' },
-    { name: 'Artikel', href: '/artikel' },
-    { name: 'Kontak', href: '/kontak' },
+  const menuItems = [
+    { name: "Beranda", href: "/", icon: "🏠" },
+    { name: "Produk", href: "/produk", icon: "🏗️" },
+    { name: "Artikel", href: "/artikel", icon: "📰" },
+    { name: "Kontak", href: "/kontak", icon: "📞" },
   ];
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-sm shadow-lg'
-          : 'bg-gradient-to-r from-blue-600 to-blue-800'
+          ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200"
+          : "bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg"
       }`}
     >
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">MB</span>
-              </div>
-              <span className={`font-bold text-lg ${
-                isScrolled ? 'text-blue-600' : 'text-white'
-              }`}>
-                Mitra Bangunindobaja
-              </span>
-            </Link>
-          </div>
-
-          {/* Mobile Layout: Logo - SearchBar - Burger */}
-          <div className="flex items-center space-x-4 md:hidden">
-            {/* Mobile Search Bar */}
-            <div className="flex-1 max-w-xs">
-              <SearchBar isMobile={true} />
-            </div>
-            
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 rounded-md ${
-                isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo Section */}
+          <Link href="/" className="flex items-center space-x-3 group">
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${
+                isScrolled
+                  ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg"
+                  : "bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg"
               }`}
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
+              <span className="text-xl text-white">🏗️</span>
+            </div>
+            <div className="hidden sm:block">
+              <h1
+                className={`font-bold text-lg transition-all duration-300 ${
+                  isScrolled ? "text-gray-800" : "text-white"
+                }`}
+              >
+                Mitra Bangun Indo Baja
+              </h1>
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
-            {navigation.map((item) => (
+          <nav className="hidden lg:flex items-center space-x-1">
+            {menuItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  router.pathname === item.href
-                    ? isScrolled 
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'bg-white/20 text-white'
-                    : isScrolled
-                      ? 'text-gray-700 hover:bg-gray-100'
-                      : 'text-white hover:bg-white/10'
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                  isScrolled
+                    ? "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                    : "text-white hover:text-blue-200 hover:bg-white/10"
                 }`}
               >
-                {item.name}
+                <span className="text-sm">{item.icon}</span>
+                <span className="font-medium">{item.name}</span>
               </Link>
             ))}
-            
+          </nav>
+
+          {/* Mobile Search Bar */}
+          <div className="flex-1 max-w-xs mx-2 lg:hidden">
+            <SearchBar />
+          </div>
+
+          {/* Right Section */}
+          <div className="flex items-center space-x-3">
             {/* Desktop Search Bar */}
-            <div className="ml-4">
-              <SearchBar isMobile={false} />
+            <div className="hidden lg:block">
+              <SearchBar />
             </div>
+
+            {/* WhatsApp Button */}
+            <a
+              href="https://wa.me/6281244677317"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
+                isScrolled
+                  ? "bg-green-500 text-white hover:bg-green-600 shadow-lg"
+                  : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
+              }`}
+            >
+              <span>💬</span>
+              <span>WhatsApp</span>
+            </a>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${
+                isScrolled
+                  ? "text-gray-700 hover:bg-gray-100"
+                  : "text-white hover:bg-white/10"
+              }`}
+              aria-label="Toggle Menu"
+            >
+              <div className="w-6 h-6 flex flex-col justify-center space-y-1">
+                <span
+                  className={`block h-0.5 w-6 bg-current transition-all duration-300 ${
+                    isMenuOpen ? "rotate-45 translate-y-1.5" : ""
+                  }`}
+                ></span>
+                <span
+                  className={`block h-0.5 w-6 bg-current transition-all duration-300 ${
+                    isMenuOpen ? "opacity-0" : ""
+                  }`}
+                ></span>
+                <span
+                  className={`block h-0.5 w-6 bg-current transition-all duration-300 ${
+                    isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
+                  }`}
+                ></span>
+              </div>
+            </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className={`px-2 pt-2 pb-3 space-y-1 border-t ${
-              isScrolled ? 'border-gray-200 bg-white' : 'border-white/20 bg-blue-700/50'
-            }`}>
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    router.pathname === item.href
-                      ? isScrolled
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-white/20 text-white'
-                      : isScrolled
-                        ? 'text-gray-700 hover:bg-gray-100'
-                        : 'text-white hover:bg-white/10'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </nav>
+        {/* Mobile Menu */}
+        <div
+          className={`lg:hidden transition-all duration-300 overflow-hidden ${
+            isMenuOpen ? "max-h-96 pb-4" : "max-h-0"
+          }`}
+        >
+          <nav className="pt-4 space-y-2">
+            {/* Mobile Menu Items */}
+            {menuItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  isScrolled
+                    ? "text-gray-700 hover:bg-gray-50"
+                    : "text-white hover:bg-white/20 backdrop-blur-sm"
+                }`}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            ))}
+
+            {/* Mobile WhatsApp Button */}
+            <a
+              href="https://wa.me/6281244677317"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-3 px-4 py-3 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors duration-200"
+            >
+              <span className="text-lg">💬</span>
+              <span>Chat WhatsApp</span>
+            </a>
+          </nav>
+        </div>
+      </div>
     </header>
   );
 }
