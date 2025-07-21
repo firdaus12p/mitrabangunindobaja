@@ -17,7 +17,7 @@ export default function Header() {
   const menuItems = [
     { name: "Beranda", href: "/", icon: "🏠" },
     { name: "Produk", href: "/produk", icon: "🏗️" },
-    { name: "Artikel", href: "/artikel", icon: "📰" },
+    { name: "Artikel", href: "/blog", icon: "📰" },
     { name: "Kontak", href: "/kontak", icon: "📞" },
   ];
 

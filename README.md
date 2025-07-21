@@ -103,7 +103,7 @@ Website ini didesain untuk deployment sebagai static site ke:
 - Hostinger (static hosting)
 
 ```bash
-# Build dan export
+# Build dan export (tanpa halaman artikel untuk sementara)
 npm run build && npm run export
 
 # Upload folder 'out' ke hosting provider
