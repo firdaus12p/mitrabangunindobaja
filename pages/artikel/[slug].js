@@ -307,28 +307,15 @@ export default function ArticleDetailPage() {
   );
 }
 
-// This function gets called at build time for static generation
-export async function getStaticPaths() {
-  // Get all article slugs
-  const paths = articles.map((article) => ({
-    params: { slug: article.slug },
-  }));
-
-  return {
-    paths,
-    fallback: false, // false = 404 for paths not returned by getStaticPaths
-  };
-}
-
 // Generate paths for all articles at build time
 export async function getStaticPaths() {
   const paths = articles.map((article) => ({
     params: { slug: article.slug },
   }));
 
-  return { 
-    paths, 
-    fallback: false 
+  return {
+    paths,
+    fallback: false,
   };
 }
 
