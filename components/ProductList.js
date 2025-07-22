@@ -261,11 +261,12 @@ export default function ProductList() {
                 >
                   {/* Product Image */}
                   <div className="relative h-48 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-t-3xl overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-6xl group-hover:scale-125 transition-transform duration-500">
-                        {categoryIcons[product.category]}
-                      </span>
-                    </div>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                    />
 
                     {/* Rating Badge */}
                     <div className="absolute top-4 left-4 bg-yellow-400/90 backdrop-blur-sm text-yellow-900 px-3 py-1 rounded-full text-sm font-bold flex items-center space-x-1">

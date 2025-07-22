@@ -16,6 +16,8 @@ export default function ProdukPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("popular");
   const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const productsPerPage = 12;
 
@@ -77,6 +79,16 @@ export default function ProdukPage() {
     indexOfLastProduct
   );
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setSelectedProduct(null);
+    setShowModal(false);
+  };
 
   const breadcrumbs = [
     { name: "Beranda", href: "/" },
@@ -368,7 +380,7 @@ export default function ProdukPage() {
                           <img
                             src={product.image}
                             alt={product.name}
-                            className="w-full h-48 object-cover"
+                            className="w-full aspect-square object-cover"
                             loading="lazy"
                           />
                           {product.originalPrice && (
@@ -414,12 +426,12 @@ export default function ProdukPage() {
                           </div>
 
                           <div className="flex space-x-2">
-                            <a
-                              href={`/produk/${product.slug}`}
+                            <button
+                              onClick={() => openModal(product)}
                               className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
                             >
                               Detail
-                            </a>
+                            </button>
                             <a
                               href={`https://wa.me/6281244677317?text=Halo, saya tertarik dengan produk ${encodeURIComponent(
                                 product.name
@@ -489,6 +501,152 @@ export default function ProdukPage() {
 
       <Footer />
       <WhatsAppButton />
+
+      {/* Modal Detail Produk */}
+      {showModal && selectedProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Detail Produk
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Product Image */}
+                <div className="space-y-4">
+                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src={selectedProduct.detailImage || selectedProduct.image}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Category Badge */}
+                  <div className="flex justify-center">
+                    <span className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+                      {
+                        categories.find(
+                          (cat) => cat.id === selectedProduct.category
+                        )?.name
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                {/* Product Info */}
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                      {selectedProduct.name}
+                    </h3>
+                    <p className="text-gray-600 text-lg leading-relaxed">
+                      {selectedProduct.description}
+                    </p>
+                  </div>
+
+                  {/* Price */}
+                  <div className="space-y-2">
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Harga:
+                    </h4>
+                    <div className="flex items-baseline space-x-2">
+                      <span className="text-2xl font-bold text-blue-600">
+                        {selectedProduct.price}
+                      </span>
+                      {selectedProduct.originalPrice && (
+                        <span className="text-lg text-gray-500 line-through">
+                          {selectedProduct.originalPrice}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      *Harga dapat berubah sewaktu-waktu
+                    </p>
+                  </div>
+
+                  {/* Specifications */}
+                  {selectedProduct.specifications && (
+                    <div className="space-y-3">
+                      <h4 className="text-lg font-semibold text-gray-800">
+                        Spesifikasi:
+                      </h4>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <ul className="space-y-2">
+                          {Object.entries(selectedProduct.specifications).map(
+                            ([key, value]) => (
+                              <li key={key} className="flex justify-between">
+                                <span className="text-gray-600 capitalize">
+                                  {key.replace(/([A-Z])/g, " $1").trim()}:
+                                </span>
+                                <span className="font-medium text-gray-800">
+                                  {value}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Features */}
+                  {selectedProduct.features &&
+                    selectedProduct.features.length > 0 && (
+                      <div className="space-y-3">
+                        <h4 className="text-lg font-semibold text-gray-800">
+                          Keunggulan:
+                        </h4>
+                        <ul className="space-y-2">
+                          {selectedProduct.features.map((feature, index) => (
+                            <li
+                              key={index}
+                              className="flex items-start space-x-2"
+                            >
+                              <span className="text-green-500 text-lg">✓</span>
+                              <span className="text-gray-700">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-3 pt-4">
+                    <a
+                      href={`https://wa.me/6281244677317?text=Halo, saya tertarik dengan produk ${encodeURIComponent(
+                        selectedProduct.name
+                      )}. Bisa minta informasi lebih detail?`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 bg-green-500 text-white text-center py-3 px-6 rounded-lg hover:bg-green-600 transition-colors font-medium"
+                    >
+                      💬 Tanya via WhatsApp
+                    </a>
+                    <button
+                      onClick={closeModal}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                    >
+                      Tutup
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
